@@ -1,44 +1,34 @@
 clear; clc;
 %% Define basic parameters
-Lx=pi;  %Define length of X
-Ly=pi;  %Define length of Y
-U0=0;   %Define boundary conditions
-UL=0;
-V0=0;
-VL=0;
-M=1;    %Integer in f(x)
+ax=-pi; %Define lower x bound
+ay=-pi; %Define lower y bound
+bx=pi;  %Define upper x bound
+by=pi;  %Define upper y bound
+Lx=bx-ax;  %Define length of X
+Ly=by-ay;  %Define length of Y
 %% Nodes
-Nx=39;    %Number of nodes added to the x-axis
+Nx=20;    %Number of nodes added to the x-axis
 Hx=Lx/(1+Nx);    %Length of x-axis segment
-Ny=39;    %Number of nodes added to the x-axis
+Ny=20;    %Number of nodes added to the y-axis
 Hy=Ly/(1+Ny);    %Length of y-axis segment
 %% Create U matrix
-U=zeros(Ny+2,Nx+2); %Create the initial U matrix
-U(1,:)=U0;  %Apply boundary condition to bottom
-U(Ny+2,:)=UL;  %Apply boundary condition to top
-U(:,1)=V0;  %Apply boundary condition to left
-U(:,Nx+2)=VL;  %Apply boundary condition to right
+U=zeros(Nx+2,Ny+2); %Preallocate the U matrix
+for i=1:Nx+2
+    x=Hx*(i-1)+ax;  %Compute the x-value for the given i
+    U(1,i)=(x-ax)^2*sin(pi*(x-ax)/(2*Hx));  %Set BC for y=ay
+    U(Nx+2,i)=cos(pi*(x-ax))*cosh(bx-x);    %Set BC for y=by
+end
 %% Gauss-Seidel Loop
-Count=1;
 while Count < 10000
-    for k=Ny+1:-1:2    %All y points not on the boundary
-        for j=2:Nx+1    %All x points not on the boundary
-            F=-2*M*sin(M*(j-1)*Hx)*cosh(M*(Ny+2-k)*Hy);  %Define f(x,y) for the particular j,k point
-            U(k,j)=(1/4)*(U(k,j-1)+U(k,j+1)+U(k-1,j)+U(k+1,j))-((Hx^2)/4*F);
+    for j=2:Ny+1    %All y points not on the boundary
+        y=Hy*(j-1)+ay;  %Compute the y-value for the given j
+        
+        
+        for i=1:Nx+2    %All x points
+            x=Hx*(i-1)+ax;  %Compute the x-value for the given i
+            F=sin(pi*(x-ax)/Hx)*cos((0.5*pi)*(2*(y-ay)/Hy)+1);  %Define F(x,y) for the particular i,j point
+            U(i,j)=(0.25)*(Hx*(U(i,j-1)+U(i,j+1))+Hy*(U(i-1,j)+U(i+1,j))+(Hx*Hy*F));
         end
     end
-    Count=Count+1;
+    Count=Count+1;  %ERROR
 end
-%% Solve for the true value of U(x,y)
-Utrue=zeros(Ny+2,Nx+2); %Create the initial U matrix
-Utrue(1,:)=U0;  %Apply boundary condition to bottom
-Utrue(Ny+2,:)=UL;  %Apply boundary condition to top
-Utrue(:,1)=V0;  %Apply boundary condition to left
-Utrue(:,Nx+2)=VL;  %Apply boundary condition to right
-for y=Ny+1:-1:2
-    for x=2:Nx+1
-        Utrue(y,x)=(Ly-((Ny+2-y)*Hy))*sin(M*(x-1)*Hx)*sinh(M*(Ny+2-y)*Hy);
-    end
-end
-Uerrorabs=abs(U(2:Ny+1,2:Nx+1)-Utrue(2:Ny+1,2:Nx+1));
-Uerrorrel=abs(U(2:Ny+1,2:Nx+1)-Utrue(2:Ny+1,2:Nx+1))./abs(Utrue(2:Ny+1,2:Nx+1));
