@@ -15,17 +15,17 @@ Hy=Ly/(1+Ny);    %Length of y-axis segment
 Dy=Hy*Hy;   %Determine delta y squared
 %% Create U matrix
 U=zeros(Nx+2,Ny+2); %Preallocate the U matrix
-W=zeros(Nx+2,Ny+2);
+W=zeros(Nx+2,Ny+2); %Preallocate a dummy matrix
 for j=1:Nx+2
     x=Hx*(j-1)+ax;  %Compute the x-value for the given i
     U(j,1)=((x-ax)^2)*sin(pi/2*(x-ax)/(Lx));  %Set BC for y=ay
     U(j,Ny+2)=cos(pi*(x-ax))*cosh(bx-x);    %Set BC for y=by
 end
 %% SOR Loop
-Count=0;
-Max=1;
+Count=0;    %Initialize the count
+Max=1;  %Set Max greater than the limit
 w=1.9;  %Set the coefficient for the over-relaxation
-End=Nx+2;
+End=Nx+2;   %Precompute 'N'
 while Max > 10^-6
     for k=2:Ny+1    %All y points not on the boundary
         y=Hy*(k-1)+ay;  %Compute the y-value for the given k
@@ -40,17 +40,17 @@ while Max > 10^-6
             U(j,k)=-(w-1)*W(j,k)+w*(Dx*(U(j,k-1)+U(j,k+1))+Dy*(U(j-1,k)+U(j+1,k))+(Dx*Dy*F))/(2*(Dx+Dy));
         end
     end
-    Count=Count+1;  %ERROR
-    Diff=W-U;
-    MaxA=max(abs(Diff));
-    Max=max(MaxA);
-    W=U;
+    Count=Count+1;  %Increase the count
+    Diff=W-U;   %Determine the difference between the previous and current iteration
+    MaxA=max(abs(Diff));    %Find the max of each column
+    Max=max(MaxA);  %Find the overall max
+    W=U;    %n+1 becomes n
 end
 %% 3D Plot of the Matrix
-X=-pi:Hx:pi;
-Y=-pi:Hy:pi;
-V=transpose(U);
-h=surf(X,Y,V);
-ylabel('y')
-xlabel('x')
-set(h,'linestyle','none');
+X=-pi:Hx:pi;    %Discretize the X axis
+Y=-pi:Hy:pi;    %Discretize the X axis
+V=transpose(U); %Transpose the matrix so that the x and y axes are correct
+h=surf(X,Y,V);  %Create surface plot
+ylabel('y') %Label the y-axis
+xlabel('x') %Label the x-axis
+set(h,'linestyle','none');  %Remove the gridlines
