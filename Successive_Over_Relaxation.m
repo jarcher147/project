@@ -1,4 +1,8 @@
 clear; clc;
+%% Checkpoint Check
+if exist( 'checkpointSOR.mat','file' ) % If a checkpoint file exists, load it
+    load('checkpointSOR.mat')
+end
 %% Define basic parameters
 ax=-pi; %Define lower x bound
 ay=-pi; %Define lower y bound
@@ -7,10 +11,10 @@ by=pi;  %Define upper y bound
 Lx=bx-ax;  %Define length of X
 Ly=by-ay;  %Define length of Y
 %% Nodes
-Nx=80;    %Number of nodes added to the x-axis
+Nx=160;    %Number of nodes added to the x-axis
 Hx=Lx/(1+Nx);    %Length of x-axis segment
 Dx=Hx*Hx;   %Determine delta x squared
-Ny=80;    %Number of nodes added to the y-axis
+Ny=160;    %Number of nodes added to the y-axis
 Hy=Ly/(1+Ny);    %Length of y-axis segment
 Dy=Hy*Hy;   %Determine delta y squared
 %% Create U matrix
@@ -45,12 +49,16 @@ while Max > 10^-6
     MaxA=max(abs(Diff));    %Find the max of each column
     Max=max(MaxA);  %Find the overall max
     W=U;    %n+1 becomes n
-end
+    if mod(Count,1000)==0   %Save checkpoint file every 1000 iterations
+        save('checkpointSOR.mat'); %Save the file
+    end     %Close if loop
+end     %Close while loop
 %% 3D Plot of the Matrix
 X=-pi:Hx:pi;    %Discretize the X axis
-Y=-pi:Hy:pi;    %Discretize the X axis
+Y=-pi:Hy:pi;    %Discretize the Y axis
 V=transpose(U); %Transpose the matrix so that the x and y axes are correct
 h=surf(X,Y,V);  %Create surface plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
+colormap('lines');
