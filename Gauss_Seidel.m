@@ -11,10 +11,10 @@ by=pi;  %Define upper y bound
 Lx=bx-ax;  %Define length of X
 Ly=by-ay;  %Define length of Y
 %% Nodes
-Nx=80;    %Number of nodes added to the x-axis
+Nx=160;    %Number of nodes added to the x-axis
 Hx=Lx/(1+Nx);    %Length of x-axis segment
 Dx=Hx*Hx;   %Determine delta x squared
-Ny=80;    %Number of nodes added to the y-axis
+Ny=160;    %Number of nodes added to the y-axis
 Hy=Ly/(1+Ny);    %Length of y-axis segment
 Dy=Hy*Hy;   %Determine delta y squared
 %% Create U matrix
@@ -29,7 +29,7 @@ end
 Count=0;    %Initialize the count
 Max=1;  %Set Max greater than the limit
 End=Nx+2;   %Precompute 'N'
-while Max > 10^-6
+while Max > 10^-9
     for k=2:Ny+1    %All y points not on the boundary
         y=Hy*(k-1)+ay;  %Compute the y-value for the given k
         %BC for x=ax
@@ -44,9 +44,7 @@ while Max > 10^-6
         end
     end
     Count=Count+1;  %Increase the count
-    Diff=W-U;   %Determine the difference between the previous and current iteration
-    MaxA=max(abs(Diff));    %Find the max of each column
-    Max=max(MaxA);  %Find the overall max
+     Max=max(max(abs((W-U)./W)));  %Find the overall max
     W=U;    %n+1 becomes n
     if mod(Count,1000)==0   %Save checkpoint file every 1000 iterations
         save('checkpointGS.mat'); %Save the file
@@ -60,4 +58,5 @@ h=surf(X,Y,V);  %Create surface plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
-colormap('gray');
+%colormap('gray');
+delete('checkpointGS.mat');    %Delete checkpoint file once evertything is complete
