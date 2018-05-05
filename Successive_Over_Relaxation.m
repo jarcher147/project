@@ -30,7 +30,7 @@ Count=0;    %Initialize the count
 Max=1;  %Set Max greater than the limit
 w=1.9;  %Set the coefficient for the over-relaxation
 End=Nx+2;   %Precompute 'N'
-while Max > 10^-6
+while Max > 10^-9
     for k=2:Ny+1    %All y points not on the boundary
         y=Hy*(k-1)+ay;  %Compute the y-value for the given k
         %BC for x=ax
@@ -45,9 +45,7 @@ while Max > 10^-6
         end
     end
     Count=Count+1;  %Increase the count
-    Diff=W-U;   %Determine the difference between the previous and current iteration
-    MaxA=max(abs(Diff));    %Find the max of each column
-    Max=max(MaxA);  %Find the overall max
+    Max=max(max(abs((W-U)./W)));  %Find the overall max
     W=U;    %n+1 becomes n
     if mod(Count,1000)==0   %Save checkpoint file every 1000 iterations
         save('checkpointSOR.mat'); %Save the file
@@ -62,3 +60,4 @@ ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
 colormap('lines');
+delete('checkpointSOR.mat');    %Delete checkpoint file once evertything is complete
