@@ -8,13 +8,13 @@ ax=-pi; %Define lower x bound
 ay=-pi; %Define lower y bound
 bx=pi;  %Define upper x bound
 by=pi;  %Define upper y bound
-Lx=bx-ax;  %Define length of X
-Ly=by-ay;  %Define length of Y
-%% Nodes
-Nx=160;    %Number of nodes added to the x-axis
+Lx=bx-ax;  %Define length of x
+Ly=by-ay;  %Define length of y
+%% Initial Matrix
+Nx=160;  %Number of nodes added to the x-axis
+Ny=160;  %Number of nodes added to the y-axis
 Hx=Lx/(1+Nx);    %Length of x-axis segment
 Dx=Hx*Hx;   %Determine delta x squared
-Ny=160;    %Number of nodes added to the y-axis
 Hy=Ly/(1+Ny);    %Length of y-axis segment
 Dy=Hy*Hy;   %Determine delta y squared
 %% Create U matrix
@@ -44,20 +44,29 @@ while Max > 10^-6
             U(j,k)=-(w-1)*W(j,k)+w*(Dx*(U(j,k-1)+U(j,k+1))+Dy*(U(j-1,k)+U(j+1,k))+(Dx*Dy*F))/(2*(Dx+Dy));
         end
     end
+    AverageValue=sum(sum(U))/((Nx+2)*(Ny+2));
     Count=Count+1;  %Increase the count
     Max=max(max(abs((W-U)./W)));  %Find the overall max
     W=U;    %n+1 becomes n
     if mod(Count,1000)==0   %Save checkpoint file every 1000 iterations
         save('checkpointSOR.mat'); %Save the file
     end     %Close if loop
-end     %Close while loop
+end     %Close while loop for Max
 %% 3D Plot of the Matrix
 X=-pi:Hx:pi;    %Discretize the X axis
 Y=-pi:Hy:pi;    %Discretize the Y axis
 V=transpose(U); %Transpose the matrix so that the x and y axes are correct
+figure()    %First figure
 h=surf(X,Y,V);  %Create surface plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
-%colormap('lines');
-delete('checkpointSOR.mat');    %Delete checkpoint file once evertything is complete
+figure()    %Second figure
+zlevels=[-200,-150,-100,-50,-40,-30,-20,-10,0,10,20,30,40];
+contour(X,Y,V,zlevels,'ShowText','on');  %Create contour plot
+ylabel('y') %Label the y-axis
+xlabel('x') %Label the x-axis
+set(h,'linestyle','none');  %Remove the gridlines
+if exist( 'checkpointSOR.mat','file' )
+    delete('checkpointSOR.mat');    %Delete checkpoint file once evertything is complete
+end
