@@ -74,8 +74,17 @@ end
 L2norm=sqrt(sum(sum(ERROR))/(Nx*Ny));   %Compute the L2 error
 logL2=log10(L2norm);    %Determine log of the L2 norm for spacial accuracy
 logdelta=log10(Hx); %Determine log of delta x for spacial accuracy
+figure()    %First figure
 h=surf(X,Y,V);  %Create surface plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
-delete('checkpointGS_Man.mat');    %Delete checkpoint file once evertything is complete
+figure()    %Second figure
+zlevels=-0.8:0.4:0.8;   %Set the levels for the contour lines
+contour(X,Y,V,zlevels,'ShowText','on');  %Create contour plot
+ylabel('y') %Label the y-axis
+xlabel('x') %Label the x-axis
+set(h,'linestyle','none');  %Remove the gridlines
+if exist( 'checkpointGS_Man.mat','file' )
+    delete('checkpointGS_Man.mat');    %Delete checkpoint file once evertything is complete
+end
