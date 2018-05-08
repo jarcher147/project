@@ -44,7 +44,7 @@ while Max > 10^-6
         end
     end
     Count=Count+1;  %Increase the count
-     Max=max(max(abs((W-U)./W)));  %Find the overall max
+    Max=max(max(abs((W-U)./W)));  %Find the overall max
     W=U;    %n+1 becomes n
     if mod(Count,1000)==0   %Save checkpoint file every 1000 iterations
         save('checkpointGS.mat'); %Save the file
@@ -54,9 +54,17 @@ end     %Close while loop
 X=-pi:Hx:pi;    %Discretize the X axis
 Y=-pi:Hy:pi;    %Discretize the Y axis
 V=transpose(U); %Transpose the matrix so that the x and y axes are correct
+figure()    %First figure
 h=surf(X,Y,V);  %Create surface plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
-%colormap('gray');
-delete('checkpointGS.mat');    %Delete checkpoint file once evertything is complete
+figure()    %Second figure
+zlevels=[-200,-150,-100,-50,-40,-30,-20,-10,0,10,20,30,40];
+contour(X,Y,V,zlevels,'ShowText','on');  %Create contour plot
+ylabel('y') %Label the y-axis
+xlabel('x') %Label the x-axis
+set(h,'linestyle','none');  %Remove the gridlines
+if exist( 'checkpointGS.mat','file' )
+    delete('checkpointGS.mat');    %Delete checkpoint file once evertything is complete
+end
