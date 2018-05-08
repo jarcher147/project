@@ -2,8 +2,8 @@ clear; clc;
 % The manufactured solution uses U=cos(Hx)*cos(Dy)
 %Based on the problem statement, this gives F=(D^2+H^2)*cos(Hx)*cos(Dy)
 %% Checkpoint Check
-if exist( 'checkpointSOR_Man.mat','file' ) % If a checkpoint file exists, load it
-    load('checkpointSOR_Man.mat')
+if exist( 'checkpointGS_Man.mat','file' ) % If a checkpoint file exists, load it
+    load('checkpointGS_Man.mat')
 end
 %% Define basic parameters
 ax=-pi; %Define lower x bound
@@ -51,7 +51,7 @@ while Max > 10^-8
     Max=max(max(abs((W-U)./W)));  %Find the overall max
     W=U;    %n+1 becomes n
     if mod(Count,1000)==0   %Save checkpoint file every 1000 iterations
-        save('checkpointSOR_Man.mat'); %Save the file
+        save('checkpointGS_Man.mat'); %Save the file
     end     %Close if loop
 end     %Close while loop
 %% 3D Plot of the Matrix
@@ -78,4 +78,4 @@ h=surf(X,Y,V);  %Create surface plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
-delete('checkpointSOR_Man.mat');    %Delete checkpoint file once evertything is complete
+delete('checkpointGS_Man.mat');    %Delete checkpoint file once evertything is complete
