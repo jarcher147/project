@@ -37,7 +37,7 @@ end
 %% SOR Loop
 Count=0;    %Initialize the count
 Max=1;  %Set Max greater than the limit
-w=1.3;  %Set the coefficient for the over-relaxation
+w=1.9;  %Set the coefficient for the over-relaxation
 End=Nx+2;   %Precompute 'N'
 while Max > 10^-8
     for k=2:Ny+1    %All y points not on the boundary
@@ -75,8 +75,17 @@ end
 L2norm=sqrt(sum(sum(ERROR))/(Nx*Ny));   %Compute the L2 error
 logL2=log10(L2norm);    %Determine log of the L2 norm for spacial accuracy
 logdelta=log10(Hx); %Determine log of delta x for spacial accuracy
+figure()    %First figure
 h=surf(X,Y,V);  %Create surface plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
-delete('checkpointSOR_Man.mat');    %Delete checkpoint file once evertything is complete
+figure()    %Second figure
+zlevels=-0.8:0.4:0.8;   %Set the levels for the contour lines
+contour(X,Y,V,zlevels,'ShowText','on');  %Create contour plot
+ylabel('y') %Label the y-axis
+xlabel('x') %Label the x-axis
+set(h,'linestyle','none');  %Remove the gridlines
+if exist( 'checkpointSOR_Man.mat','file' )
+    delete('checkpointSOR_Man.mat');    %Delete checkpoint file once evertything is complete
+end
