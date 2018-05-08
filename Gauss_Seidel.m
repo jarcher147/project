@@ -23,13 +23,13 @@ W=zeros(Nx+2,Ny+2); %Preallocate a dummy matrix
 for j=1:Nx+2
     x=Hx*(j-1)+ax;  %Compute the x-value for the given i
     U(j,1)=((x-ax)^2)*sin(pi/2*(x-ax)/(Lx));  %Set BC for y=ay
-    U(j,Ny+2)=cos(pi*(x-ax))*cosh(bx-x);    %Set BC for y=by
+    U(j,Ny+2)=(cos(pi*(x-ax))-1)*cosh(bx-x);    %Set BC for y=by
 end
 %% Gauss-Seidel Loop
 Count=0;    %Initialize the count
 Max=1;  %Set Max greater than the limit
 End=Nx+2;   %Precompute 'N'
-while Max > 10^-9
+while Max > 10^-6
     for k=2:Ny+1    %All y points not on the boundary
         y=Hy*(k-1)+ay;  %Compute the y-value for the given k
         %BC for x=ax
