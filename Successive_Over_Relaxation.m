@@ -62,11 +62,11 @@ ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
 figure()    %Second figure
-zlevels=[-200,-150,-100,-50,-40,-30,-20,-10,0,10,20,30,40];
+zlevels=[-100,-80,-70,-50,-20,-10,-5,-2,0,10,20,30,40];   %Set the levels for the contour plot
 contour(X,Y,V,zlevels,'ShowText','on');  %Create contour plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
 if exist( 'checkpointSOR.mat','file' )
-    delete('checkpointSOR.mat');    %Delete checkpoint file once evertything is complete
+    delete('checkpointSOR.mat');    %Delete checkpoint file once everything is complete
 end
