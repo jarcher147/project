@@ -43,6 +43,7 @@ while Max > 10^-6
             U(j,k)=(Dx*(U(j,k-1)+U(j,k+1))+Dy*(U(j-1,k)+U(j+1,k))+(Dx*Dy*F))/(2*(Dx+Dy));
         end
     end
+    AverageValue=sum(sum(U))/((Nx+2)*(Ny+2));   %Calculate the average of U value
     Count=Count+1;  %Increase the count
     Max=max(max(abs((W-U)./W)));  %Find the overall max
     W=U;    %n+1 becomes n
@@ -60,11 +61,11 @@ ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
 figure()    %Second figure
-zlevels=[-200,-150,-100,-50,-40,-30,-20,-10,0,10,20,30,40];
+zlevels=[-100,-80,-70,-50,-20,-10,-5,-2,0,10,20,30,40];    %Set the levels for the contour plot
 contour(X,Y,V,zlevels,'ShowText','on');  %Create contour plot
 ylabel('y') %Label the y-axis
 xlabel('x') %Label the x-axis
 set(h,'linestyle','none');  %Remove the gridlines
 if exist( 'checkpointGS.mat','file' )
-    delete('checkpointGS.mat');    %Delete checkpoint file once evertything is complete
+    delete('checkpointGS.mat');    %Delete checkpoint file once everything is complete
 end
